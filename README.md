@@ -1,7 +1,7 @@
 # mqueue-mac
 Implementation of POSIX mqueue using System V messages.
 
-23-January-2022
+23-January-2022  
 James P. Parziale
 
 ## Description
