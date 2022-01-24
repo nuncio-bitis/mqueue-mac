@@ -24,7 +24,6 @@
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
 #define MAX_MSG_SIZE 256
-#define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
 int main (int argc, char **argv)
 {
@@ -55,8 +54,8 @@ int main (int argc, char **argv)
         return 1;
     }
 
-    char in_buffer [MSG_BUFFER_SIZE];
-    char temp_buf [MSG_BUFFER_SIZE];
+    char in_buffer [MAX_MSG_SIZE];
+    char temp_buf [MAX_MSG_SIZE];
 
     // @NOTE: When the user enters '^D', this will send
     // TERMINATION_MSG to the server to shut it down.

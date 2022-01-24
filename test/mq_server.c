@@ -23,7 +23,6 @@
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
 #define MAX_MSG_SIZE 256
-#define MSG_BUFFER_SIZE MAX_MSG_SIZE + 10
 
 int main (int argc, char **argv)
 {
@@ -42,8 +41,8 @@ int main (int argc, char **argv)
         perror ("Server: mq_open (server)");
         return 1;
     }
-    char in_buffer [MSG_BUFFER_SIZE];
-    char out_buffer [MSG_BUFFER_SIZE];
+    char in_buffer [MAX_MSG_SIZE];
+    char out_buffer [MAX_MSG_SIZE + 32];
 
     printf ("Server: Hello, World!\n");
 
@@ -79,7 +78,7 @@ int main (int argc, char **argv)
         }
 
         // send reply message to client
-        sprintf (out_buffer, "(%ld) %s", token_number, in_buffer);
+        snprintf (out_buffer, sizeof(out_buffer), "(%ld) %s", token_number, in_buffer);
         if (mq_send (qd_client, out_buffer, strlen (out_buffer), 1) == -1)
         {
             perror ("Server: Not able to send message to client");

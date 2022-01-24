@@ -242,7 +242,7 @@ ssize_t mq_receive (
     {
         *__msg_prio = rbuf.mtype;
     }
-    (void) strncpy(__msg_ptr, rbuf.mtext, sizeof(rbuf.mtext));
+    (void) strncpy(__msg_ptr, rbuf.mtext, MSGSZ);
 
     return nbytes;
 }
@@ -262,9 +262,9 @@ int mq_send (
     message_buf sbuf;
 
     sbuf.mtype = __msg_prio;
-    (void) strncpy(sbuf.mtext, __msg_ptr, sizeof(sbuf.mtext));
+    (void) strncpy(sbuf.mtext, __msg_ptr, MSGSZ-1);
 
-    size_t buf_length = strlen(sbuf.mtext) + 1;
+    size_t buf_length = strlen(sbuf.mtext);
 
     int ret = msgsnd(__mqdes, &sbuf, buf_length, IPC_NOWAIT);
     if (ret < 0)

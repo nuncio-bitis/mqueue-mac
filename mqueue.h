@@ -32,6 +32,7 @@
 #define _MQUEUE_H
 // ****************************************************************************
 
+#include <stdint.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
