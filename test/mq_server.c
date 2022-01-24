@@ -16,8 +16,8 @@
 #include <sys/stat.h>
 #include <mqueue.h>
 
-#define SERVER_QUEUE_NAME   "sp-example-server"
-#define CLIENT_QUEUE_NAME   "sp-example-client"
+#define SERVER_QUEUE_NAME   "/sp-example-server"
+#define CLIENT_QUEUE_NAME   "/sp-example-client"
 #define TERMINATION_MSG     "<TERMINATE>"
 
 #define QUEUE_PERMISSIONS 0660
