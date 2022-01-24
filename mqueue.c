@@ -43,10 +43,9 @@
 /*
  * Declare the message structure.
  */
-#define MSGSZ 1024 // Max message size
 typedef struct msgbuf_t {
     long mtype; // use for message priority
-    char mtext[MSGSZ];
+    char mtext[MAX_MSG_SIZE];
 } message_buf;
 
 // ****************************************************************************
@@ -229,9 +228,10 @@ ssize_t mq_receive (
     unsigned int *__msg_prio)
 {
     message_buf rbuf;
+    memset(&rbuf, 0, sizeof(rbuf));
     size_t nbytes = 0;
 
-    nbytes = msgrcv(__mqdes, &rbuf, __msg_len, 0, 0);
+    nbytes = msgrcv(__mqdes, &rbuf, __msg_len, 0, MSG_NOERROR);
     if (nbytes < 0)
     {
         perror("mq_receive : msgrcv");
@@ -242,7 +242,7 @@ ssize_t mq_receive (
     {
         *__msg_prio = rbuf.mtype;
     }
-    (void) strncpy(__msg_ptr, rbuf.mtext, MSGSZ);
+    (void) strcpy(__msg_ptr, rbuf.mtext);
 
     return nbytes;
 }
@@ -260,13 +260,12 @@ int mq_send (
     unsigned int __msg_prio)
 {
     message_buf sbuf;
+    memset(&sbuf, 0, sizeof(sbuf));
 
     sbuf.mtype = __msg_prio;
-    (void) strncpy(sbuf.mtext, __msg_ptr, MSGSZ-1);
+    (void) strcpy(sbuf.mtext, __msg_ptr);
 
-    size_t buf_length = strlen(sbuf.mtext);
-
-    int ret = msgsnd(__mqdes, &sbuf, buf_length, IPC_NOWAIT);
+    int ret = msgsnd(__mqdes, &sbuf, __msg_len, IPC_NOWAIT);
     if (ret < 0)
     {
         perror("mq_send : msgsnd");

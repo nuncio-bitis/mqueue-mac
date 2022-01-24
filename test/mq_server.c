@@ -16,13 +16,12 @@
 #include <sys/stat.h>
 #include <mqueue.h>
 
-#define SERVER_QUEUE_NAME   "/sp-example-server"
-#define CLIENT_QUEUE_NAME   "/sp-example-client"
-#define TERMINATION_MSG     "<TERMINATE>"
+const char SERVER_QUEUE_NAME[] = "/sp-example-server";
+const char CLIENT_QUEUE_NAME[] = "/sp-example-client";
+const char TERMINATION_MSG[] = "<TERMINATE>";
 
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
-#define MAX_MSG_SIZE 256
 
 int main (int argc, char **argv)
 {
@@ -41,8 +40,10 @@ int main (int argc, char **argv)
         perror ("Server: mq_open (server)");
         return 1;
     }
-    char in_buffer [MAX_MSG_SIZE];
-    char out_buffer [MAX_MSG_SIZE + 32];
+    char in_buffer [MAX_MSG_SIZE+1];
+    char out_buffer [MAX_MSG_SIZE+1];
+    memset(in_buffer, 0, sizeof(in_buffer));
+    memset(out_buffer, 0, sizeof(out_buffer));
 
     printf ("Server: Hello, World!\n");
 
@@ -63,6 +64,7 @@ int main (int argc, char **argv)
     while (1)
     {
         // get the oldest message with highest priority
+        memset(in_buffer, '\0', sizeof(in_buffer));
         if (mq_receive (qd_server, in_buffer, MAX_MSG_SIZE, NULL) == -1)
         {
             perror ("Server: mq_receive");
