@@ -21,6 +21,7 @@ const char SERVER_QUEUE_NAME[] = "/sp-example-server";
 const char CLIENT_QUEUE_NAME[] = "/sp-example-client";
 const char TERMINATION_MSG[] = "<TERMINATE>";
 
+#define MAX_MSG_SIZE 1024
 #define QUEUE_PERMISSIONS 0660
 #define MAX_MESSAGES 10
 
