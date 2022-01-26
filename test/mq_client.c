@@ -20,6 +20,7 @@
 const char SERVER_QUEUE_NAME[] = "/sp-example-server";
 const char CLIENT_QUEUE_NAME[] = "/sp-example-client";
 const char TERMINATION_MSG[] = "<TERMINATE>";
+const char EXIT_MSG[] = "-EXIT-";
 
 #define MAX_MSG_SIZE 1024
 #define QUEUE_PERMISSIONS 0660
@@ -65,16 +66,36 @@ int main (int argc, char **argv)
     // @NOTE: When the user enters '^D', this will send
     // TERMINATION_MSG to the server to shut it down.
 
-    printf ("Enter a string (Press <ENTER>): ");
-    while (fgets (temp_buf, MAX_MSG_SIZE, stdin))
+    int terminate = 0;
+    while (!terminate)
     {
+        printf ("Enter a string (^D or %s to exit): ", EXIT_MSG);
+
+        if (NULL == fgets (temp_buf, MAX_MSG_SIZE, stdin))
+        {
+            terminate = 1;
+        }
+
         // Replace the trailing newline with null byte
         temp_buf[strlen(temp_buf)-1] = '\0';
 
         if (strlen(temp_buf) < 1)
         {
-            printf ("Enter a string (Press <ENTER>): ");
             continue;
+        }
+
+        // Check if the user entered the termination message (not likely, but need to check)
+        if (0 == strncmp(TERMINATION_MSG, temp_buf, sizeof(temp_buf)))
+        {
+            // Change the string (force user to use ^D or EXIT_MSG)
+            strncat(temp_buf, "\002", 1);
+        }
+
+        // Check if the user wants to end the session
+        if (0 == strncmp(EXIT_MSG, temp_buf, sizeof(temp_buf)))
+        {
+            // Graceful shutdown
+            break;
         }
 
         // send message to server
@@ -93,8 +114,6 @@ int main (int argc, char **argv)
         }
         // display token received from server
         printf ("Client: Message received from server: %s\n", in_buffer);
-
-        printf ("Enter a string (Press <ENTER>): ");
     }
     printf ("\n");
 
